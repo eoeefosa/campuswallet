@@ -1,4 +1,4 @@
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000'
+const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080'
 
 export function getToken(): string | null {
   if (typeof window === 'undefined') return null
@@ -30,18 +30,37 @@ export function storeUser(user: object) {
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const token = getToken()
-  const res = await fetch(`${BASE}${path}`, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(init?.headers ?? {}),
-    },
-  })
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ message: res.statusText }))
-    throw new Error(err.message ?? 'Request failed')
+  let res: Response
+
+  try {
+    res = await fetch(`${BASE}${path}`, {
+      ...init,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(init?.headers ?? {}),
+      },
+    })
+  } catch (networkErr) {
+    console.error(`[API] Network error on ${path}:`, networkErr)
+    throw new Error(
+      `Cannot reach server at ${BASE}. Make sure the backend is running on port 8080.`
+    )
   }
+
+  if (!res.ok) {
+    let message = `Server error (${res.status})`
+    try {
+      const body = await res.json()
+      const detail = body.error ? ` — ${body.error}` : ''
+      message = (body.message ?? message) + detail
+    } catch {
+      message = res.statusText || message
+    }
+    console.error(`[API] ${res.status} on ${path}:`, message)
+    throw new Error(message)
+  }
+
   return res.json()
 }
 

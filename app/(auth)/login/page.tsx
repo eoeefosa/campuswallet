@@ -21,11 +21,14 @@ export default function LoginPage() {
       storeUser(res.user)
       router.push('/dashboard')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed')
+      const msg = err instanceof Error ? err.message : String(err)
+      setError(msg)
     } finally {
       setLoading(false)
     }
   }
+
+  const inputCls = 'w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent'
 
   return (
     <div className="w-full max-w-md">
@@ -35,8 +38,8 @@ export default function LoginPage() {
           <h1 className="text-2xl font-bold text-green-700">CampusWallet</h1>
         </div>
 
-        <h2 className="text-xl font-semibold mb-1">Welcome back</h2>
-        <p className="text-gray-500 text-sm mb-6">Sign in to your account</p>
+        <h2 className="text-xl font-semibold text-gray-900 mb-1">Welcome back</h2>
+        <p className="text-sm text-gray-500 mb-6">Sign in to your account</p>
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm mb-4">
@@ -52,7 +55,7 @@ export default function LoginPage() {
               required
               value={form.email}
               onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className={inputCls}
               placeholder="you@university.edu"
             />
           </div>
@@ -63,7 +66,7 @@ export default function LoginPage() {
               required
               value={form.password}
               onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className={inputCls}
               placeholder="••••••••"
             />
           </div>
