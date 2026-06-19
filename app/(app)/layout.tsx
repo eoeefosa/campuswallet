@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { getToken, clearAuth, getStoredUser } from '@/lib/api'
-import { User } from '@/lib/types'
+import type { User } from '@/lib/types'
 
 const NAV = [
   { href: '/dashboard', label: 'Dashboard', icon: '🏠' },
@@ -18,6 +18,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
   const [user, setUser] = useState<User | null>(null)
+  // Start as false so server and client first render both output nothing — no mismatch
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
     if (!getToken()) {
@@ -25,6 +27,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       return
     }
     setUser(getStoredUser())
+    setReady(true)
   }, [router])
 
   function handleLogout() {
@@ -32,7 +35,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     router.replace('/login')
   }
 
-  if (!getToken()) return null
+  // Server renders null. Client also renders null on first paint (ready=false),
+  // then switches to the real layout after the effect runs. Both sides agree.
+  if (!ready) return null
 
   return (
     <div className="flex min-h-screen">
