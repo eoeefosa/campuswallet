@@ -18,8 +18,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
   const [user, setUser] = useState<User | null>(null)
-  // Start as false so server and client first render both output nothing — no mismatch
-  const [ready, setReady] = useState(false)
 
   useEffect(() => {
     if (!getToken()) {
@@ -27,7 +25,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       return
     }
     setUser(getStoredUser())
-    setReady(true)
   }, [router])
 
   function handleLogout() {
@@ -35,10 +32,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     router.replace('/login')
   }
 
-  // Server renders null. Client also renders null on first paint (ready=false),
-  // then switches to the real layout after the effect runs. Both sides agree.
-  if (!ready) return null
-
+  // Always render the same shell on server and client.
+  // Auth redirect happens in useEffect — no hydration mismatch.
   return (
     <div className="flex min-h-screen">
       {/* Sidebar — desktop */}
@@ -69,8 +64,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </nav>
 
         <div className="px-4 py-4 border-t border-gray-200">
-          <div className="text-xs text-gray-500 mb-1 truncate">{user?.name ?? '—'}</div>
-          <div className="text-xs text-gray-400 mb-3 truncate">{user?.school}</div>
+          <div suppressHydrationWarning className="text-xs text-gray-500 mb-1 truncate">{user?.name ?? ''}</div>
+          <div suppressHydrationWarning className="text-xs text-gray-400 mb-3 truncate">{user?.school ?? ''}</div>
           <button
             onClick={handleLogout}
             className="w-full text-left text-sm text-red-500 hover:text-red-700 font-medium"
