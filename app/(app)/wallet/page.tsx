@@ -135,7 +135,7 @@ export default function WalletPage() {
         ) : (
           <div className="divide-y divide-gray-100">
             {transactions.map(tx => (
-              <div key={tx.id} className="flex items-center justify-between px-5 py-4">
+              <div key={tx.id ?? tx._id} className="flex items-center justify-between px-5 py-4">
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${
                     tx.type === 'credit' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'

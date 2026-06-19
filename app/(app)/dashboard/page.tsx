@@ -141,7 +141,7 @@ export default function DashboardPage() {
         ) : (
           <div className="divide-y divide-gray-100">
             {recentExpenses.map(exp => (
-              <div key={exp.id} className="flex items-center justify-between py-3">
+              <div key={exp.id ?? exp._id} className="flex items-center justify-between py-3">
                 <div>
                   <p className="text-sm font-medium text-gray-900">{exp.category}</p>
                   {exp.note && <p className="text-xs text-gray-500">{exp.note}</p>}

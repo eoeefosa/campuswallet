@@ -51,7 +51,7 @@ export default function ExpensesPage() {
   async function handleDelete(id: string) {
     if (!confirm('Delete this expense?')) return
     await api.del(`/api/expenses/${id}`)
-    setExpenses(prev => prev.filter(e => e.id !== id))
+    setExpenses(prev => prev.filter(e => (e.id ?? e._id) !== id))
   }
 
   const total = expenses.reduce((s, e) => s + e.amount, 0)
@@ -156,7 +156,7 @@ export default function ExpensesPage() {
           <div className="text-center py-10 text-gray-400 text-sm">No expenses found</div>
         ) : (
           expenses.map(exp => (
-            <div key={exp.id} className="flex items-center justify-between px-5 py-4">
+            <div key={exp.id ?? exp._id} className="flex items-center justify-between px-5 py-4">
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium text-gray-900">{exp.category}</span>
@@ -169,7 +169,7 @@ export default function ExpensesPage() {
                   -{formatNaira(exp.amount)}
                 </span>
                 <button
-                  onClick={() => handleDelete(exp.id)}
+                  onClick={() => handleDelete(exp.id ?? exp._id)}
                   className="text-red-400 hover:text-red-600 text-xs transition-colors"
                   title="Delete"
                 >

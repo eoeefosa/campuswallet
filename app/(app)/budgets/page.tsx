@@ -145,7 +145,7 @@ export default function BudgetsPage() {
             const remaining = b.limit - b.spent
             const { text, cls } = statusLabel(pct)
             return (
-              <div key={b.id} className="bg-white border border-gray-200 rounded-2xl p-5">
+              <div key={b.id ?? b._id} className="bg-white border border-gray-200 rounded-2xl p-5">
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <h3 className="font-semibold text-gray-900">{b.category}</h3>
@@ -154,7 +154,7 @@ export default function BudgetsPage() {
                   <div className="flex items-center gap-2">
                     <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${cls}`}>{text}</span>
                     <button
-                      onClick={() => handleDelete(b.id)}
+                      onClick={() => handleDelete(b.id ?? b._id)}
                       className="text-gray-300 hover:text-red-500 transition-colors text-sm"
                     >
                       ✕

@@ -7,6 +7,7 @@ export interface User {
 
 export interface Expense {
   id: string
+  _id: string
   amount: number
   category: string
   note: string
@@ -15,6 +16,7 @@ export interface Expense {
 
 export interface Budget {
   id: string
+  _id: string
   category: string
   limit: number
   spent: number
@@ -23,6 +25,7 @@ export interface Budget {
 
 export interface WalletTransaction {
   id: string
+  _id: string
   type: 'credit' | 'debit'
   amount: number
   description: string
