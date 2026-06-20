@@ -1,6 +1,10 @@
-export const BASE =
-  process.env.NEXT_PUBLIC_API_URL ??
-  "https://campus-wallet-aoy1.onrender.com/api";
+// Normalize the API origin: strip any trailing slash and a trailing "/api".
+// Every call in the app already prefixes paths with "/api", so BASE must be
+// the bare origin — otherwise URLs become ".../api/api/..." → 404.
+const RAW_BASE =
+  process.env.NEXT_PUBLIC_API_URL ?? "https://campus-wallet-aoy1.onrender.com";
+
+export const BASE = RAW_BASE.replace(/\/+$/, "").replace(/\/api$/, "");
 
 export function getToken(): string | null {
   if (typeof window === "undefined") return null;
@@ -32,9 +36,6 @@ export function storeUser(user: object) {
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const token = getToken();
-  console.log("BASE =", BASE);
-  console.log("PATH =", path);
-  console.log("URL =", `${BASE}${path}`);
   const res = await fetch(`${BASE}${path}`, {
     ...init,
     cache: "no-store",
@@ -44,9 +45,6 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
       ...(init?.headers ?? {}),
     },
   });
-  console.log("====================================");
-  console.log(res);
-  console.log("====================================");
   if (!res.ok) {
     const err = await res.json().catch(() => ({ message: res }));
     throw new Error(err.message ?? "Request failed");
