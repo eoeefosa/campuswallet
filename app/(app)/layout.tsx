@@ -9,12 +9,14 @@ import { IoHomeSharp } from "react-icons/io5";
 import { GiExpense } from "react-icons/gi";
 import { FaMoneyBillWheat, FaWallet } from "react-icons/fa6";
 import { TbReportMoney } from "react-icons/tb";
+import { BiQrScan } from "react-icons/bi";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: <IoHomeSharp /> },
   { href: "/expenses", label: "Expenses", icon: <GiExpense /> },
   { href: "/budgets", label: "Budgets", icon: <FaMoneyBillWheat /> },
   { href: "/wallet", label: "Wallet", icon: <FaWallet /> },
+  { href: "/transfer", label: "Transfer", icon: <BiQrScan /> },
   { href: "/reports", label: "Reports", icon: <TbReportMoney /> },
 ];
 
