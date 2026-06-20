@@ -6,7 +6,7 @@ import SwRegister from './sw-register'
 const geist = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'CampusWallet — Student Expense Tracker',
+  title: 'CampusWallet - Student Expense Tracker',
   description: 'Track expenses, set budgets, and manage your student wallet',
   appleWebApp: {
     capable: true,
@@ -26,7 +26,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${geist.variable} h-full`}>
+    <html lang="en" className={`${geist.variable} h-full`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col bg-gray-50 text-gray-900 antialiased">
         {children}
         <SwRegister />

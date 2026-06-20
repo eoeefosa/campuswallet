@@ -18,7 +18,7 @@ export default function BudgetsPage() {
 
   async function fetchBudgets() {
     try {
-      const data = await api.get<Budget[]>('/api/budgets')
+      const data = await api.get<Budget[]>('/budgets')
       setBudgets(data)
     } finally {
       setLoading(false)
@@ -32,7 +32,7 @@ export default function BudgetsPage() {
     setError('')
     setSaving(true)
     try {
-      await api.post('/api/budgets', { ...form, limit: parseFloat(form.limit) })
+      await api.post('/budgets', { ...form, limit: parseFloat(form.limit) })
       setForm(EMPTY_FORM)
       setShowForm(false)
       fetchBudgets()
@@ -45,20 +45,20 @@ export default function BudgetsPage() {
 
   async function handleDelete(id: string) {
     if (!confirm('Delete this budget?')) return
-    await api.del(`/api/budgets/${id}`)
+    await api.del(`/budgets/${id}`)
     setBudgets(prev => prev.filter(b => b.id !== id))
   }
 
   function statusColor(pct: number) {
-    if (pct >= 100) return 'bg-red-500'
+    if (pct >= 100) return 'bg-blue-500'
     if (pct >= 80) return 'bg-amber-400'
-    return 'bg-green-500'
+    return 'bg-blue-500'
   }
 
   function statusLabel(pct: number) {
-    if (pct >= 100) return { text: 'Over budget', cls: 'bg-red-100 text-red-700' }
+    if (pct >= 100) return { text: 'Over budget', cls: 'bg-blue-100 text-blue-700' }
     if (pct >= 80) return { text: 'Near limit', cls: 'bg-amber-100 text-amber-700' }
-    return { text: 'On track', cls: 'bg-green-100 text-green-700' }
+    return { text: 'On track', cls: 'bg-blue-100 text-blue-700' }
   }
 
   return (
@@ -67,7 +67,7 @@ export default function BudgetsPage() {
         <h1 className="text-2xl font-bold text-gray-900">Budgets</h1>
         <button
           onClick={() => setShowForm(v => !v)}
-          className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+          className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
         >
           {showForm ? 'Cancel' : '+ New Budget'}
         </button>
@@ -87,7 +87,7 @@ export default function BudgetsPage() {
               <select
                 value={form.category}
                 onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {CATEGORIES.map(c => <option key={c}>{c}</option>)}
               </select>
@@ -101,7 +101,7 @@ export default function BudgetsPage() {
                 placeholder="e.g. 20000"
                 value={form.limit}
                 onChange={e => setForm(f => ({ ...f, limit: e.target.value }))}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
@@ -110,14 +110,14 @@ export default function BudgetsPage() {
                 type="month"
                 value={form.month}
                 onChange={e => setForm(f => ({ ...f, month: e.target.value }))}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div className="flex items-end">
               <button
                 type="submit"
                 disabled={saving}
-                className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white font-medium py-2 rounded-lg text-sm transition-colors"
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-medium py-2 rounded-lg text-sm transition-colors"
               >
                 {saving ? 'Saving…' : 'Save Budget'}
               </button>
@@ -133,7 +133,7 @@ export default function BudgetsPage() {
           <p className="text-gray-400 text-sm mb-3">No budgets set yet</p>
           <button
             onClick={() => setShowForm(true)}
-            className="bg-green-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+            className="bg-blue-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Set your first budget
           </button>
@@ -155,14 +155,14 @@ export default function BudgetsPage() {
                     <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${cls}`}>{text}</span>
                     <button
                       onClick={() => handleDelete(b.id)}
-                      className="text-gray-300 hover:text-red-500 transition-colors text-sm"
+                      className="text-blue-300 hover:text-blue-500 transition-colors text-sm"
                     >
                       ✕
                     </button>
                   </div>
                 </div>
 
-                <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden mb-3">
+                <div className="h-2.5 bg-blue-100 rounded-full overflow-hidden mb-3">
                   <div
                     className={`h-full rounded-full transition-all ${statusColor(pct)}`}
                     style={{ width: `${pct}%` }}
@@ -175,7 +175,7 @@ export default function BudgetsPage() {
                   </span>
                   <span className="text-gray-500">
                     {remaining >= 0
-                      ? <><span className="font-medium text-green-600">{formatNaira(remaining)}</span> left</>
+                      ? <><span className="font-medium text-blue-600">{formatNaira(remaining)}</span> left</>
                       : <span className="font-medium text-red-600">{formatNaira(Math.abs(remaining))} over</span>
                     }
                     {' '}of {formatNaira(b.limit)}

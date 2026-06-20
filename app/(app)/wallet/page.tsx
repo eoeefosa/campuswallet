@@ -17,8 +17,8 @@ export default function WalletPage() {
     async function load() {
       try {
         const [balRes, txRes] = await Promise.allSettled([
-          api.get<{ balance: number }>('/api/wallet/balance'),
-          api.get<WalletTransaction[]>('/api/wallet/transactions'),
+          api.get<{ balance: number }>('/wallet/balance'),
+          api.get<WalletTransaction[]>('/wallet/transactions'),
         ])
         if (balRes.status === 'fulfilled') setBalance(balRes.value.balance)
         if (txRes.status === 'fulfilled') setTransactions(txRes.value)
@@ -41,7 +41,7 @@ export default function WalletPage() {
     try {
       const user = getStoredUser()
       const res = await api.post<{ authorization_url: string; reference: string }>(
-        '/api/payments/initiate',
+        '/payments/initiate',
         { amount: amountNum, email: user?.email }
       )
       window.location.href = res.authorization_url
@@ -58,12 +58,12 @@ export default function WalletPage() {
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Wallet</h1>
 
       {/* Balance card */}
-      <div className="bg-gradient-to-br from-green-600 to-emerald-700 rounded-2xl p-6 text-white mb-6">
-        <p className="text-green-100 text-sm mb-1">Available Balance</p>
+      <div className="bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl p-6 text-white mb-6">
+        <p className="text-blue-100 text-sm mb-1">Available Balance</p>
         <p className="text-4xl font-bold mb-4">
           {loading ? '…' : balance !== null ? formatNaira(balance) : '—'}
         </p>
-        <div className="flex items-center gap-2 text-green-200 text-xs">
+        <div className="flex items-center gap-2 text-blue-200 text-xs">
           <span>🔒</span>
           <span>Secured by Paystack</span>
         </div>
@@ -86,8 +86,8 @@ export default function WalletPage() {
               onClick={() => setAmount(String(a))}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
                 amount === String(a)
-                  ? 'bg-green-600 text-white border-green-600'
-                  : 'border-gray-300 text-gray-600 hover:border-green-500 hover:text-green-600'
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'border-gray-300 text-gray-600 hover:border-blue-500 hover:text-blue-600'
               }`}
             >
               {formatNaira(a)}
@@ -105,13 +105,13 @@ export default function WalletPage() {
               placeholder="Enter amount"
               value={amount}
               onChange={e => setAmount(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg pl-7 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full border border-gray-300 rounded-lg pl-7 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <button
             type="submit"
             disabled={funding || !amount}
-            className="bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white font-semibold px-5 py-2.5 rounded-lg text-sm transition-colors whitespace-nowrap"
+            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold px-5 py-2.5 rounded-lg text-sm transition-colors whitespace-nowrap"
           >
             {funding ? 'Redirecting…' : 'Pay with Paystack'}
           </button>
@@ -138,7 +138,7 @@ export default function WalletPage() {
               <div key={tx.id} className="flex items-center justify-between px-5 py-4">
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${
-                    tx.type === 'credit' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'
+                    tx.type === 'credit' ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-600'
                   }`}>
                     {tx.type === 'credit' ? '↓' : '↑'}
                   </div>
@@ -148,7 +148,7 @@ export default function WalletPage() {
                   </div>
                 </div>
                 <span className={`text-sm font-semibold ${
-                  tx.type === 'credit' ? 'text-green-600' : 'text-red-600'
+                  tx.type === 'credit' ? 'text-blue-600' : 'text-red-600'
                 }`}>
                   {tx.type === 'credit' ? '+' : '-'}{formatNaira(tx.amount)}
                 </span>

@@ -18,8 +18,8 @@ export default function ReportsPage() {
       setLoading(true)
       try {
         const [bdRes, trRes] = await Promise.allSettled([
-          api.get<SpendingBreakdown[]>(`/api/reports/breakdown?month=${month}`),
-          api.get<MonthlyTrend[]>('/api/expenses/trends'),
+          api.get<SpendingBreakdown[]>(`/reports/breakdown?month=${month}`),
+          api.get<MonthlyTrend[]>('/expenses/trends'),
         ])
         if (bdRes.status === 'fulfilled') setBreakdown(bdRes.value)
         if (trRes.status === 'fulfilled') setTrends(trRes.value)
@@ -35,7 +35,7 @@ export default function ReportsPage() {
 
   async function handleExport() {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000'}/api/reports/export?month=${month}`,
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000'}/reports/export?month=${month}`,
       { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
     )
     const blob = await res.blob()
