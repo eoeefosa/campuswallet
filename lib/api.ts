@@ -1,10 +1,11 @@
-// Normalize the API origin: strip any trailing slash and a trailing "/api".
-// Every call in the app already prefixes paths with "/api", so BASE must be
-// the bare origin — otherwise URLs become ".../api/api/..." → 404.
+// Every call in the app uses paths WITHOUT the "/api" prefix (e.g. "/auth/login",
+// "/wallet/balance"), so BASE must always end in exactly "/api". This normalizes
+// the env value whether it's the bare origin, has a trailing slash, or already
+// ends in "/api" — preventing both missing-/api (404) and double-/api (404).
 const RAW_BASE =
   process.env.NEXT_PUBLIC_API_URL ?? "https://campus-wallet-aoy1.onrender.com";
 
-export const BASE = RAW_BASE.replace(/\/+$/, "").replace(/\/api$/, "");
+export const BASE = RAW_BASE.replace(/\/+$/, "").replace(/\/api$/, "") + "/api";
 
 export function getToken(): string | null {
   if (typeof window === "undefined") return null;

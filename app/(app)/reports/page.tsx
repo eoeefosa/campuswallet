@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { api } from '@/lib/api'
+import { api, BASE } from '@/lib/api'
 import { SpendingBreakdown, MonthlyTrend } from '@/lib/types'
 import { formatNaira, CATEGORY_COLORS } from '@/lib/format'
 
@@ -35,7 +35,7 @@ export default function ReportsPage() {
 
   async function handleExport() {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000'}/reports/export?month=${month}`,
+      `${BASE}/reports/export?month=${month}`,
       { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
     )
     const blob = await res.blob()
