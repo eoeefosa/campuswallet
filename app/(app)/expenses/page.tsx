@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Expense, Budget } from "@/lib/types";
 import { formatNaira, formatDate, CATEGORIES } from "@/lib/format";
+import { ensureNotifyPermission, showLocalNotification } from "@/lib/notify";
 
 const EMPTY_FORM = { amount: "", category: CATEGORIES[0], note: "", date: "" };
 const THIS_MONTH = new Date().toISOString().slice(0, 7);
@@ -40,6 +41,8 @@ export default function ExpensesPage() {
     setWarning(null);
     setSaving(true);
     const category = form.category;
+    // Ask for notification permission on this user gesture (first time only).
+    ensureNotifyPermission();
     try {
       await api.post("/expenses", {
         ...form,
@@ -65,15 +68,13 @@ export default function ExpensesPage() {
       if (!b || b.limit <= 0) return;
       const pct = Math.round((b.spent / b.limit) * 100);
       if (b.spent >= b.limit) {
-        setWarning({
-          level: "over",
-          text: `You're over your ${category} budget — ₦${b.spent.toLocaleString()} of ₦${b.limit.toLocaleString()} (${pct}%).`,
-        });
+        const text = `You're over your ${category} budget — ₦${b.spent.toLocaleString()} of ₦${b.limit.toLocaleString()} (${pct}%).`;
+        setWarning({ level: "over", text });
+        showLocalNotification(`🚨 Over budget: ${category}`, text);
       } else if (pct >= 80) {
-        setWarning({
-          level: "near",
-          text: `Heads up: ${category} is at ${pct}% of budget — ₦${(b.limit - b.spent).toLocaleString()} left.`,
-        });
+        const text = `Heads up: ${category} is at ${pct}% of budget — ₦${(b.limit - b.spent).toLocaleString()} left.`;
+        setWarning({ level: "near", text });
+        showLocalNotification(`⚠️ ${category} budget almost gone`, text);
       }
     } catch {
       /* non-critical */
