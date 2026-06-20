@@ -33,12 +33,13 @@ export default function LoginPage() {
   return (
     <div className="w-full max-w-md">
       <div className="bg-white rounded-2xl shadow-lg p-8">
-        <div className="flex items-center gap-2 mb-8">
-          <span className="text-3xl">💰</span>
-          <h1 className="text-2xl font-bold text-green-700">CampusWallet</h1>
+        <div className="flex items-center gap-2 mb-5">
+          <h1 className="text-2xl font-bold text-blue-700">CampusWallet</h1>
         </div>
 
-        <h2 className="text-xl font-semibold mb-1">Welcome back</h2>
+        <h2 className="text-xl text-blue-300 font-semibold mb-5">
+          Welcome back
+        </h2>
         <p className="text-gray-500 text-sm mb-6">Sign in to your account</p>
 
         {error && (
@@ -59,7 +60,7 @@ export default function LoginPage() {
               onChange={(e) =>
                 setForm((f) => ({ ...f, email: e.target.value }))
               }
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
               placeholder="you@university.edu"
             />
           </div>
@@ -74,14 +75,14 @@ export default function LoginPage() {
               onChange={(e) =>
                 setForm((f) => ({ ...f, password: e.target.value }))
               }
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
               placeholder="••••••••"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white font-semibold rounded-lg py-2.5 text-sm transition-colors"
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold rounded-lg py-2.5 text-sm transition-colors"
           >
             {loading ? "Signing in…" : "Sign in"}
           </button>
@@ -91,7 +92,7 @@ export default function LoginPage() {
           New here?{" "}
           <Link
             href="/register"
-            className="text-green-600 font-medium hover:underline"
+            className="text-blue-600 font-medium hover:underline"
           >
             Create account
           </Link>

@@ -97,7 +97,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
           <button
             onClick={handleLogout}
-            className="w-full text-left text-sm text-red-500 hover:text-red-700 font-medium"
+            className="w-full text-left text-sm text-blue-500 hover:text-blue-700 font-medium"
           >
             Sign out
           </button>
