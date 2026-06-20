@@ -24,10 +24,17 @@ const NAV = [
   { href: "/assistant", label: "Assistant", icon: <RiRobot2Line /> },
 ];
 
-// Mobile bottom bar shows 3 primary items + a "More" button (4 slots total).
+// Mobile layout:
+//  - bottom bar: 3 primary items + a "More" button (4 slots total)
+//  - floating vertical FABs on the right: Reports, Planner, Assistant
+//  - "More" sheet: whatever is left (Budgets, Transfer)
 const MOBILE_PRIMARY = ["/dashboard", "/expenses", "/wallet"];
+const MOBILE_FAB = ["/reports", "/plan", "/assistant"];
 const primaryNav = NAV.filter((n) => MOBILE_PRIMARY.includes(n.href));
-const moreNav = NAV.filter((n) => !MOBILE_PRIMARY.includes(n.href));
+const fabNav = NAV.filter((n) => MOBILE_FAB.includes(n.href));
+const moreNav = NAV.filter(
+  (n) => !MOBILE_PRIMARY.includes(n.href) && !MOBILE_FAB.includes(n.href),
+);
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -123,6 +130,28 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Main */}
       <main className="flex-1 md:ml-60 pb-20 md:pb-0 bg-white">{children}</main>
+
+      {/* Mobile floating shortcuts — Reports, Planner, Assistant */}
+      <div className="md:hidden fixed right-4 bottom-24 z-20 flex flex-col gap-3">
+        {fabNav.map(({ href, label, icon }) => {
+          const active = pathname === href;
+          return (
+            <Link
+              key={href}
+              href={href}
+              aria-label={label}
+              title={label}
+              className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-xl transition-colors ${
+                active
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-blue-600 border border-gray-200"
+              }`}
+            >
+              {icon}
+            </Link>
+          );
+        })}
+      </div>
 
       {/* Mobile "More" sheet */}
       {moreOpen && (
