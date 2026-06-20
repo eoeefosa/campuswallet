@@ -50,15 +50,15 @@ export default function BudgetsPage() {
   }
 
   function statusColor(pct: number) {
-    if (pct >= 100) return 'bg-blue-500'
+    if (pct >= 100) return 'bg-red-500'
     if (pct >= 80) return 'bg-amber-400'
-    return 'bg-blue-500'
+    return 'bg-green-500'
   }
 
   function statusLabel(pct: number) {
-    if (pct >= 100) return { text: 'Over budget', cls: 'bg-blue-100 text-blue-700' }
+    if (pct >= 100) return { text: '⚠ Over budget', cls: 'bg-red-100 text-red-700' }
     if (pct >= 80) return { text: 'Near limit', cls: 'bg-amber-100 text-amber-700' }
-    return { text: 'On track', cls: 'bg-blue-100 text-blue-700' }
+    return { text: 'On track', cls: 'bg-green-100 text-green-700' }
   }
 
   return (

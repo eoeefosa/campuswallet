@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Expense } from "@/lib/types";
+import { Expense, Budget } from "@/lib/types";
 import { formatNaira, formatDate, CATEGORIES } from "@/lib/format";
 
 const EMPTY_FORM = { amount: "", category: CATEGORIES[0], note: "", date: "" };
+const THIS_MONTH = new Date().toISOString().slice(0, 7);
 
 export default function ExpensesPage() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -15,6 +16,7 @@ export default function ExpensesPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
+  const [warning, setWarning] = useState<{ level: "over" | "near"; text: string } | null>(null);
 
   async function fetchExpenses() {
     try {
