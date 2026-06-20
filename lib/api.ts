@@ -43,9 +43,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     })
   } catch (networkErr) {
     console.error(`[API] Network error on ${path}:`, networkErr)
-    throw new Error(
-      `Cannot reach server at ${BASE}. Make sure the backend is running on port 8080.`
-    )
+    throw new Error(`Cannot reach server at ${BASE}.`)
   }
 
   if (!res.ok) {

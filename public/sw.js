@@ -1,15 +1,9 @@
-const CACHE = 'campuswallet-v1'
+const CACHE = 'campuswallet-v2'
 const OFFLINE_URL = '/offline'
 
-const PRECACHE = [
-  '/',
-  '/dashboard',
-  '/expenses',
-  '/budgets',
-  '/wallet',
-  '/reports',
-  '/offline',
-]
+// Only precache the offline fallback. Never precache route HTML —
+// it goes stale and causes hydration mismatches against fresh client JS.
+const PRECACHE = ['/offline']
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -34,7 +28,8 @@ self.addEventListener('fetch', event => {
     return
   }
 
-  // Navigation requests: network-first, fall back to offline page
+  // Navigation requests: always network-first, never serve cached HTML.
+  // Only fall back to the offline page when the network is unreachable.
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request).catch(() =>

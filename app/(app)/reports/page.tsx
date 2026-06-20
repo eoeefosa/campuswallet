@@ -35,7 +35,7 @@ export default function ReportsPage() {
 
   async function handleExport() {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000'}/api/reports/export?month=${month}`,
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'https://campus-wallet-aoy1.onrender.com'}/api/reports/export?month=${month}`,
       { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
     )
     const blob = await res.blob()
