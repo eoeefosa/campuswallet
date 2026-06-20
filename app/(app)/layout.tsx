@@ -10,6 +10,7 @@ import { GiExpense } from "react-icons/gi";
 import { FaMoneyBillWheat, FaWallet } from "react-icons/fa6";
 import { TbReportMoney } from "react-icons/tb";
 import { BiQrScan } from "react-icons/bi";
+import { RiRobot2Line } from "react-icons/ri";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: <IoHomeSharp /> },
@@ -18,6 +19,7 @@ const NAV = [
   { href: "/wallet", label: "Wallet", icon: <FaWallet /> },
   { href: "/transfer", label: "Transfer", icon: <BiQrScan /> },
   { href: "/reports", label: "Reports", icon: <TbReportMoney /> },
+  { href: "/assistant", label: "Assistant", icon: <RiRobot2Line /> },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
