@@ -9,7 +9,7 @@ import { IoHomeSharp } from "react-icons/io5";
 import { GiExpense } from "react-icons/gi";
 import { FaMoneyBillWheat, FaWallet } from "react-icons/fa6";
 import { TbReportMoney } from "react-icons/tb";
-import { BiQrScan } from "react-icons/bi";
+import { BiQrScan, BiDotsHorizontalRounded } from "react-icons/bi";
 import { RiRobot2Line } from "react-icons/ri";
 import { LuCalculator } from "react-icons/lu";
 
@@ -24,6 +24,11 @@ const NAV = [
   { href: "/assistant", label: "Assistant", icon: <RiRobot2Line /> },
 ];
 
+// Mobile bottom bar shows 3 primary items + a "More" button (4 slots total).
+const MOBILE_PRIMARY = ["/dashboard", "/expenses", "/wallet"];
+const primaryNav = NAV.filter((n) => MOBILE_PRIMARY.includes(n.href));
+const moreNav = NAV.filter((n) => !MOBILE_PRIMARY.includes(n.href));
+
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -31,6 +36,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [moreOpen, setMoreOpen] = useState(false);
 
   useEffect(() => {
     const token = getToken();
@@ -44,6 +50,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     setUser(getStoredUser());
     setLoading(false);
   }, [router]);
+
+  // Close the mobile "More" sheet whenever the route changes.
+  useEffect(() => {
+    setMoreOpen(false);
+  }, [pathname]);
 
   function handleLogout() {
     clearAuth();
@@ -113,11 +124,46 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       {/* Main */}
       <main className="flex-1 md:ml-60 pb-20 md:pb-0 bg-white">{children}</main>
 
-      {/* Mobile Nav */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 z-10 flex">
-        {NAV.map(({ href, label, icon }) => {
-          const active = pathname === href;
+      {/* Mobile "More" sheet */}
+      {moreOpen && (
+        <div className="md:hidden fixed inset-0 z-20">
+          <div
+            className="absolute inset-0 bg-black/30"
+            onClick={() => setMoreOpen(false)}
+          />
+          <div className="absolute bottom-0 inset-x-0 bg-white rounded-t-2xl p-4 pb-6 shadow-xl">
+            <div className="mx-auto w-10 h-1 bg-gray-300 rounded-full mb-4" />
+            <div className="grid grid-cols-4 gap-3">
+              {moreNav.map(({ href, label, icon }) => {
+                const active = pathname === href;
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`flex flex-col items-center justify-center gap-1.5 py-3 rounded-xl text-xs font-medium transition-colors ${
+                      active ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    <span className="text-xl">{icon}</span>
+                    {label}
+                  </Link>
+                );
+              })}
+            </div>
+            <button
+              onClick={handleLogout}
+              className="w-full mt-4 text-sm text-red-500 hover:text-red-700 font-medium py-2"
+            >
+              Sign out
+            </button>
+          </div>
+        </div>
+      )}
 
+      {/* Mobile Nav — 3 primary + More */}
+      <nav className="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 z-10 flex">
+        {primaryNav.map(({ href, label, icon }) => {
+          const active = pathname === href;
           return (
             <Link
               key={href}
@@ -131,6 +177,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </Link>
           );
         })}
+        <button
+          onClick={() => setMoreOpen((v) => !v)}
+          className={`flex-1 flex flex-col items-center justify-center py-2 text-xs font-medium gap-0.5 transition-colors ${
+            moreOpen || moreNav.some((n) => n.href === pathname)
+              ? "text-blue-700"
+              : "text-gray-500"
+          }`}
+        >
+          <span className="text-xl"><BiDotsHorizontalRounded /></span>
+          More
+        </button>
       </nav>
     </div>
   );
