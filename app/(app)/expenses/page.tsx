@@ -37,7 +37,9 @@ export default function ExpensesPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setWarning(null);
     setSaving(true);
+    const category = form.category;
     try {
       await api.post("/expenses", {
         ...form,
@@ -47,10 +49,34 @@ export default function ExpensesPage() {
       setForm(EMPTY_FORM);
       setShowForm(false);
       fetchExpenses();
+      checkBudgetWarning(category);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save");
     } finally {
       setSaving(false);
+    }
+  }
+
+  // After logging an expense, warn if its category is now near or over budget.
+  async function checkBudgetWarning(category: string) {
+    try {
+      const budgets = await api.get<Budget[]>("/budgets");
+      const b = budgets.find((x) => x.category === category && x.month === THIS_MONTH);
+      if (!b || b.limit <= 0) return;
+      const pct = Math.round((b.spent / b.limit) * 100);
+      if (b.spent >= b.limit) {
+        setWarning({
+          level: "over",
+          text: `You're over your ${category} budget — ₦${b.spent.toLocaleString()} of ₦${b.limit.toLocaleString()} (${pct}%).`,
+        });
+      } else if (pct >= 80) {
+        setWarning({
+          level: "near",
+          text: `Heads up: ${category} is at ${pct}% of budget — ₦${(b.limit - b.spent).toLocaleString()} left.`,
+        });
+      }
+    } catch {
+      /* non-critical */
     }
   }
 
@@ -73,6 +99,27 @@ export default function ExpensesPage() {
           {showForm ? "Cancel" : "+ Log Expense"}
         </button>
       </div>
+
+      {/* Overspend warning after logging an expense */}
+      {warning && (
+        <div
+          className={`flex items-start gap-2 rounded-xl px-4 py-3 mb-6 text-sm border ${
+            warning.level === "over"
+              ? "bg-red-50 border-red-200 text-red-700"
+              : "bg-amber-50 border-amber-200 text-amber-800"
+          }`}
+        >
+          <span className="text-lg leading-none">{warning.level === "over" ? "🚨" : "⚠️"}</span>
+          <span className="flex-1">{warning.text}</span>
+          <button
+            onClick={() => setWarning(null)}
+            className="text-current/60 hover:text-current"
+            aria-label="Dismiss"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Add expense form */}
       {showForm && (
